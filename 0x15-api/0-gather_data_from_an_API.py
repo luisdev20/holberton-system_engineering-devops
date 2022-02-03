@@ -42,4 +42,3 @@ if __name__ == "__main__":
         TASK_TITLE = doing.get('title')
         if doing.get('completed'):
             int("\t {}".format(TASK_TITLE))
-
