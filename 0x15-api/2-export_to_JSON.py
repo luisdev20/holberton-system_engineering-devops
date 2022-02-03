@@ -3,7 +3,7 @@
 
 from requests import get
 from sys import argv, exit
-import csv
+import json
 
 if __name__ == "__main__":
     try:
@@ -30,14 +30,20 @@ if __name__ == "__main__":
         USER_ID = id
         USERNAME = jsuser[0].get('username')
 
-        # export data in the CSV format
-        with open(id + '.csv', 'w', newline='') as csvfile:
-            csvwriter = csv.writer(csvfile, delimiter=',',
-                                   quotechar='"', quoting=csv.QUOTE_ALL)
-            for task in jstodo:
-                TASK_COMPLETED_STATUS = task.get('completed')
-                TASK_TITLE = task.get('title')
-                csvwriter.writerow([USER_ID,
-                                    USERNAME,
-                                    TASK_COMPLETED_STATUS,
-                                    TASK_TITLE])
+        # create the value of the dict of the final json file
+        jslist = []
+        for task in jstodo:
+            TASK_TITLE = task.get('title')
+            TASK_COMPLETED_STATUS = task.get('completed')
+            # write the internal dict
+            taskdict = {"task": TASK_TITLE,
+                        "completed": TASK_COMPLETED_STATUS,
+                        "username": USERNAME}
+            jslist.append(taskdict)
+
+        # create the final dictionary
+        jsresult = {USER_ID: jslist}
+
+        # generate the jsonfile
+        with open(id + '.json', 'w', newline='') as jsonfile:
+            json.dump(jsresult, jsonfile)
